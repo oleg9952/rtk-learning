@@ -1,13 +1,38 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
+import {
+  setAge,
+  setEmail,
+  setFirstName,
+  setLastName,
+} from "../../redux/features/user/userSlice";
 
 const UserForm: React.FC = () => {
+  const dispatch = useDispatch();
+  const { firstName, lastName, age, email } = useSelector(
+    (state: RootState) => state.user
+  );
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const userData = Object.fromEntries(formData);
+
+    dispatch(setFirstName(userData.firstName));
+    dispatch(setLastName(userData.lastName));
+    dispatch(setEmail(userData.email));
+    dispatch(setAge(+userData.age));
+  };
+
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         User Registration Form
       </h2>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {/* First Name */}
         <div>
           <label
@@ -20,6 +45,7 @@ const UserForm: React.FC = () => {
             type="text"
             id="firstName"
             name="firstName"
+            defaultValue={firstName}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Enter your first name"
           />
@@ -37,6 +63,7 @@ const UserForm: React.FC = () => {
             type="text"
             id="lastName"
             name="lastName"
+            defaultValue={lastName}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Enter your last name"
           />
@@ -54,6 +81,7 @@ const UserForm: React.FC = () => {
             type="email"
             id="email"
             name="email"
+            defaultValue={email}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Enter your email address"
           />
@@ -73,6 +101,7 @@ const UserForm: React.FC = () => {
             name="age"
             min="1"
             max="120"
+            defaultValue={age}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Enter your age"
           />
